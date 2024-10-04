@@ -7,16 +7,17 @@ const router = express.Router();
 
 router.post(
     "/myInfo_register",
+    // 文字形式や文字数、またそのほかのリクエストに関するバリデーション
     body('lastName')
         .notEmpty().withMessage('姓は必須です')
         .isString().withMessage("文字のみで入力が必須です")
         .isLength({min: 1, max: 40}).withMessage("40文字以内で入力してください"),
     body('firstName')
-        .notEmpty().withMessage('姓は必須です')
+        .notEmpty().withMessage('名は必須です')
         .isString().withMessage("文字のみで入力が必須です")
         .isLength({min: 1, max: 40}).withMessage("40文字以内で入力してください"),
     body('address')
-        .notEmpty().withMessage('姓は必須です')
+        .notEmpty().withMessage('住所は必須です')
         .isString().withMessage("文字のみで入力が必須です")
         .isLength({min: 1, max: 100}).withMessage("100文字以内で入力してください"),
     body('tel')

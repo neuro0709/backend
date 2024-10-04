@@ -6,14 +6,6 @@ import dbConfig from "../config/dbConfig.js"
 
 // 社員の一覧に追加のリクエストが来た時に、SQLにデータを追加する
 async function registerEmployees (req, res) {
-    const errors = validationResult(req)
-    // バリデーションエラーがある場合の処理
-    if(!errors.isEmpty()){
-        const errs = errors.array();
-        return res.status(400).json(errs)
-    }
-
-    // リクエストを新しいオブジェクトで受けて、元のデータにプッシュする
     const newEmployee = req.body;
     const connection = await mysql.createConnection(dbConfig)
     try {
@@ -26,12 +18,16 @@ async function registerEmployees (req, res) {
         ])
         res.status(201).json({ message: '社員が登録されました'});
     } catch(error) {
+        // データベースでの登録で何かしらのエラーが発生したとき
         console.log("データベースエラー", error);
         res.status(500).json({ message: 'データベースの登録に失敗しました' });
     } finally {
         await connection.end();
     }
 }
+export { registerEmployees }
+
+// get関係のコントローラ
 
 // 実際にはSQLより現在の社員のデータを持ってくる
 // async function getEmployees() {
@@ -55,4 +51,3 @@ async function registerEmployees (req, res) {
 //     }
 // }
 
-export { registerEmployees }
