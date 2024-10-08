@@ -1,12 +1,12 @@
 import express from "express"
 import {body, validationResult} from "express-validator"
-import {registerEmployees} from "../controllers/employeeController.js"
+import { registerEmployees} from "../controllers/employeeController.js"
 
 // /myInfo_registerのルートを追加
 const router = express.Router();
 
 router.post(
-    "/myInfo_register",
+    "/",
     // 文字形式や文字数、またそのほかのリクエストに関するバリデーション
     body('lastName')
         .notEmpty().withMessage('姓は必須です')
@@ -32,8 +32,6 @@ router.post(
     },
     registerEmployees
 )
-
-
 
 
 export default router;

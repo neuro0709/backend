@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors"
 import registerRouter from "./api/register.js"
+import getAllRouter from "./api/getAllEmployees.js";
+import  getRouter  from "./api/getEmployee.js";
 
 const app = express();
 
@@ -9,13 +11,13 @@ app.use(cors());
 app.use(express.json())
 
 // /employees/myInfo_registerにfetchでアクセスがある場合にregisterRouterが実行される
-app.use("/employees", registerRouter)
+app.use("/employees/myInfo_register", registerRouter)
+
+app.use("/employees", getAllRouter )
 
 
-// // /employee/で社員一覧を取得しようとしたとき
-// app.post("/employees/", getAllRouter)
-// // //employees/myInfoで社員情報を取得しようとしたとき
-// app.post("/employees/myInfo", getRouter)
+app.use("/employees",getRouter)
+
 // // /employee/myinfo_registerで社員情報を更新しようとしたとき
 // app.post("/employees/myInfo_register", updataRouter)
 

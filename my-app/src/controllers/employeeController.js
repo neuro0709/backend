@@ -10,6 +10,7 @@ async function registerEmployees (req, res) {
     const connection = await mysql.createConnection(dbConfig)
     try {
         const query = 'INSERT INTO employee_table (lastName, firstName, address, tel) VALUES (?, ?, ?, ?)';
+        // excuteメソッドとは、query(SQLクエリ(SQLにさせたい命令))を実行させるメソッド、今回はconnectionというTableに対して、上記のクエリを実行し配列に格納する
         await connection.execute(query, [
             newEmployee.lastName,
             newEmployee.firstName,
@@ -25,29 +26,33 @@ async function registerEmployees (req, res) {
         await connection.end();
     }
 }
-export { registerEmployees }
 
-// get関係のコントローラ
+// 社員一覧を取得する
+async function getAllEmployees(req, res) {
+    const connection = await mysql.createConnection(dbConfig);
+    try{
+        const [rows] = await connection.query('SELECT id, lastName, firstName, address, tel FROM employee_table')
+        res.status(200).json(rows)
+    }catch(err){
+        console.log("データベースエラー", err);
+        res.status(500).json({ message: 'データベースの取得に失敗しました'})
+    }finally{
+        await connection.end();
+    }
+}
 
-// 実際にはSQLより現在の社員のデータを持ってくる
-// async function getEmployees() {
-//     const connection = await mysql.createConnection(dbConfig);
-//     const [rows] = await connection.query('SELECT id, lastName, firstName, address, tel FROM employee_table')
-//     await connection.end();
-//     return rows;
-// }
 
-// // 社員の一覧にpage.jsから来たデータを、社員の一覧に加える
-// export default async function register (req, res) {
-//     try {
-//         const employees = await getEmployees();
-//         const newEmployees = req.body
-//         employees.push(newEmployees);
-//         console.log(newEmployees)
-//         res.status(201).json({ message: '社員情報を取得しました', newEmployees });
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ message: 'サーバーエラー' });
-//     }
-// }
+async function getEmployee (req, res){
+    const id = parseInt(req.params.id);
+    const connection = await mysql.createConnection(dbConfig);
+    try{
+        const [rows] = await connection.query(`SELECT * FROM employee_table where id=?`,[id])
+        res.status(200).json(rows[0])
+    }catch(err){
+        res.status(500).json({message: "データベースの取得に失敗しました"})
+    }finally{
+        await connection.end();
+    }
+}
 
+export { registerEmployees , getAllEmployees , getEmployee}
