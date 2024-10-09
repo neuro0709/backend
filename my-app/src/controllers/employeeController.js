@@ -44,9 +44,14 @@ async function getAllEmployees(req, res) {
 
 async function getEmployee (req, res){
     const id = parseInt(req.params.id);
+    // req.paramsだけだと、{id: ...}とオブジェクト形式で返される
     const connection = await mysql.createConnection(dbConfig);
     try{
         const [rows] = await connection.query(`SELECT * FROM employee_table where id=?`,[id])
+        
+        if(rows.length === 0){
+            return res.status(404).json({message:`社員が見つかりません`})
+        }
         res.status(200).json(rows[0])
     }catch(err){
         res.status(500).json({message: "データベースの取得に失敗しました"})

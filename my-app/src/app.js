@@ -13,8 +13,7 @@ app.use(express.json())
 // /employees/myInfo_registerにfetchでアクセスがある場合にregisterRouterが実行される
 app.use("/employees/myInfo_register", registerRouter)
 
-app.use("/employees", getAllRouter )
-
+app.use("/employees/list", getAllRouter )
 
 app.use("/employees",getRouter)
 
