@@ -31,7 +31,7 @@ async function registerEmployees (req, res) {
 async function getAllEmployees(req, res) {
     const connection = await mysql.createConnection(dbConfig);
     try{
-        const [rows] = await connection.query('SELECT id, lastName, firstName, address, tel FROM employee_table')
+        const [rows] = await connection.query('SELECT * FROM employee_table')
         res.status(200).json(rows)
     }catch(err){
         console.log("データベースエラー", err);
@@ -49,7 +49,7 @@ async function getEmployee (req, res){
     try{
         const [rows] = await connection.query(`SELECT * FROM employee_table where id=?`,[id])
         
-        if(rows.length === 0){
+        if(rows.length !== 1){
             return res.status(404).json({message:`社員が見つかりません`})
         }
         res.status(200).json(rows[0])
