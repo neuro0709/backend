@@ -1,11 +1,13 @@
 import {validationResult} from "express-validator"
 import mysql from "mysql2/promise"
 import dbConfig from "../config/dbConfig.js"
+import { useRouter } from "next/router.js";
 
 // (req, res)に対してどのような操作を実施するかというのを記述
 
 // 社員の一覧に追加のリクエストが来た時に、SQLにデータを追加する
 async function registerEmployees (req, res) {
+    const router = useRouter();
     const newEmployee = req.body;
     const connection = await mysql.createConnection(dbConfig)
     try {
@@ -24,7 +26,9 @@ async function registerEmployees (req, res) {
         res.status(500).json({ message: 'データベースの登録に失敗しました' });
     } finally {
         await connection.end();
+
     }
+    
 }
 
 // 社員一覧を取得する
@@ -60,4 +64,38 @@ async function getEmployee (req, res){
     }
 }
 
-export { registerEmployees , getAllEmployees , getEmployee}
+async function updateEmployee(req, res) {
+    const updateEmployee = req.body;
+    console.log(updateEmployee)
+    if(!updateEmployee || !updateEmployee.id){
+        return res.status(404).json({message: "社員が見つかりません"})
+    }
+    const connection = await mysql.createConnection(dbConfig)
+    try{
+        const query = `UPDATE employee_table SET 
+            lastName = ?,
+            firstName = ?, 
+            address = ? ,
+            tel = ? ,
+            position = ?
+        WHERE id = ?;`
+        
+        const value = [
+            updateEmployee.lastName,
+            updateEmployee.firstName,
+            updateEmployee.address,
+            updateEmployee.tel,
+            updateEmployee.position,
+            updateEmployee.id,
+        ]
+        console.log(value)
+        await connection.execute(query, value)
+        res.status(204).json({message: "社員情報更新成功"})
+    }catch(err){
+        res.status(500).json({message: "情報の更新に失敗しました"})
+    }finally{
+       await connection.end()
+    }
+}
+
+export { registerEmployees , getAllEmployees , getEmployee, updateEmployee}
