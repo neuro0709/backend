@@ -7,11 +7,11 @@ const router = express.Router();
 
 router.post(
     "/",
-    body("employees_lastname")
+    body("employees_lastName")
         .notEmpty().withMessage("性は必須です")
         .isString().withMessage("文字のみです")
         .isLength({min: 0, max: 40}).withMessage("40文字以内です"),
-    body("employees_firstname")
+    body("employees_firstName")
         .notEmpty().withMessage("性は必須です")
         .isString().withMessage("文字のみです")
         .isLength({min: 0, max: 40}).withMessage("40文字以内です"),
