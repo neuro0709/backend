@@ -7,23 +7,23 @@ const router = express.Router();
 
 router.post(
     "/",
-    body("lastName")
+    body("employees_lastname")
         .notEmpty().withMessage("性は必須です")
         .isString().withMessage("文字のみです")
         .isLength({min: 0, max: 40}).withMessage("40文字以内です"),
-    body("firstName")
+    body("employees_firstname")
         .notEmpty().withMessage("性は必須です")
         .isString().withMessage("文字のみです")
         .isLength({min: 0, max: 40}).withMessage("40文字以内です"),
-    body("address")
+    body("employees_address")
         .notEmpty().withMessage("性は必須です")
         .isString().withMessage("文字のみです")
         .isLength({min: 0, max: 100}).withMessage("100文字以内です"),
-    body("tel")
+    body("employees_tel")
         .notEmpty().withMessage("性は必須です")
         .isString().withMessage("文字のみです")
         .isLength({min: 0, max: 40}).withMessage("電話番号は10〜11桁である必要があります"),
-    body("position")
+    body("employees_position")
         .notEmpty().withMessage("性は必須です")
         .isString().withMessage("文字のみです"),
     (req, res, next) => {

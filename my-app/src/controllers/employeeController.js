@@ -1,23 +1,22 @@
 import {validationResult} from "express-validator"
 import mysql from "mysql2/promise"
 import dbConfig from "../config/dbConfig.js"
-import { useRouter } from "next/router.js";
 
 // (req, res)に対してどのような操作を実施するかというのを記述
 
 // 社員の一覧に追加のリクエストが来た時に、SQLにデータを追加する
 async function registerEmployees (req, res) {
-    const router = useRouter();
     const newEmployee = req.body;
+    console.log(req.body)
     const connection = await mysql.createConnection(dbConfig)
     try {
-        const query = 'INSERT INTO employee_table (lastName, firstName, address, tel) VALUES (?, ?, ?, ?)';
+        const query = 'INSERT INTO employees_table (employees_lastname, employees_firstname, employees_address, employees_tel) VALUES (?, ?, ?, ?)';
         // excuteメソッドとは、query(SQLクエリ(SQLにさせたい命令))を実行させるメソッド、今回はconnectionというTableに対して、上記のクエリを実行し配列に格納する
         await connection.execute(query, [
-            newEmployee.lastName,
-            newEmployee.firstName,
-            newEmployee.address,
-            newEmployee.tel
+            newEmployee.employees_lastname,
+            newEmployee.employees_firstname,
+            newEmployee.employees_address,
+            newEmployee.employees_tel
         ])
         res.status(201).json({ message: '社員が登録されました'});
     } catch(error) {
@@ -35,7 +34,7 @@ async function registerEmployees (req, res) {
 async function getAllEmployees(req, res) {
     const connection = await mysql.createConnection(dbConfig);
     try{
-        const [rows] = await connection.query('SELECT * FROM employee_table')
+        const [rows] = await connection.query('SELECT * FROM employees_table')
         res.status(200).json(rows)
     }catch(err){
         console.log("データベースエラー", err);
@@ -48,16 +47,18 @@ async function getAllEmployees(req, res) {
 
 async function getEmployee (req, res){
     const id = parseInt(req.params.id);
+    console.log(req)
     // req.paramsだけだと、{id: ...}とオブジェクト形式で返される
     const connection = await mysql.createConnection(dbConfig);
     try{
-        const [rows] = await connection.query(`SELECT * FROM employee_table where id=?`,[id])
+        const [rows] = await connection.query(`SELECT * FROM employees_table where id=?`,[id])
         
         if(rows.length !== 1){
             return res.status(404).json({message:`社員が見つかりません`})
         }
         res.status(200).json(rows[0])
     }catch(err){
+        
         res.status(500).json({message: "データベースの取得に失敗しました"})
     }finally{
         await connection.end();
@@ -72,13 +73,13 @@ async function updateEmployee(req, res) {
     }
     const connection = await mysql.createConnection(dbConfig)
     try{
-        const query = `UPDATE employee_table SET 
-            lastName = ?,
-            firstName = ?, 
-            address = ? ,
-            tel = ? ,
-            position = ?
-        WHERE id = ?;`
+        const query = `UPDATE employees_table SET 
+            employees_lastname = ?,
+            employees_firstname = ?, 
+            employees_address = ? ,
+            employees_tel = ? ,
+            employees_position = ?
+        WHERE employees_id = ?;`
         
         const value = [
             updateEmployee.lastName,
@@ -88,7 +89,6 @@ async function updateEmployee(req, res) {
             updateEmployee.position,
             updateEmployee.id,
         ]
-        console.log(value)
         await connection.execute(query, value)
         res.status(204).json({message: "社員情報更新成功"})
     }catch(err){

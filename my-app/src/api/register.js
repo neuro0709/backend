@@ -8,19 +8,19 @@ const router = express.Router();
 router.post(
     "/",
     // 文字形式や文字数、またそのほかのリクエストに関するバリデーション
-    body('lastName')
+    body('employees_lastname')
         .notEmpty().withMessage('姓は必須です')
         .isString().withMessage("文字のみで入力が必須です")
         .isLength({min: 1, max: 40}).withMessage("40文字以内で入力してください"),
-    body('firstName')
+    body('employees_firstname')
         .notEmpty().withMessage('名は必須です')
         .isString().withMessage("文字のみで入力が必須です")
         .isLength({min: 1, max: 40}).withMessage("40文字以内で入力してください"),
-    body('address')
+    body('employees_address')
         .notEmpty().withMessage('住所は必須です')
         .isString().withMessage("文字のみで入力が必須です")
         .isLength({min: 1, max: 100}).withMessage("100文字以内で入力してください"),
-    body('tel')
+    body('employees_tel')
         .notEmpty().withMessage('電話番号は必須です')
         .isLength({ min: 10, max: 11 }).withMessage('電話番号は10〜11桁である必要があります'),
     (req, res, next) => {
